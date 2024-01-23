@@ -9,7 +9,7 @@ from xgboost import XGBClassifier
 
 
 class Classifier:
-    def __init__(self, X: pd.DataFrame = None, y: pd.Series = None, features=None, classifiers: list = None,
+    def __init__(self, X: pd.DataFrame = None, y: pd.Series = None, features: pd.Series = None, classifiers: list = None,
                  cross_validation: str = 'hold_out', fold: int = 1):
         self.X = X[features] if features else X
         self.y = y
@@ -53,6 +53,15 @@ class Classifier:
                 case 'svm':
                     self.predictions['svm'] = self.SVM()
                 case 'xgb':
+                    self.predictions['xgb'] = self.XGB()
+                case 'all':
+                    self.predictions['adaboost'] = self.AdaBoost()
+                    self.predictions['gradient_boosting'] = self.GradientBoosting()
+                    self.predictions['random_forest'] = self.RandomForest()
+                    self.predictions['k_neighbors'] = self.KNeighbors()
+                    self.predictions['decision_tree'] = self.DecisionTree()
+                    self.predictions['extra_trees'] = self.ExtraTrees()
+                    self.predictions['svm'] = self.SVM()
                     self.predictions['xgb'] = self.XGB()
                 case _:
                     raise ValueError('Invalid classifier name')
@@ -128,15 +137,3 @@ class Classifier:
             predict_proba.append(xgbClf_f.predict(self.X_test[fold]))
 
         return predict_proba
-
-    def runAllClassifiers(self):
-        return {
-            'AdaBoost': self.AdaBoost(),
-            'GradientBoosting': self.GradientBoosting(),
-            'RandomForest': self.RandomForest(),
-            'KNeighbors': self.KNeighbors(),
-            'DecisionTree': self.DecisionTree(),
-            'ExtraTrees': self.ExtraTrees(),
-            'SVM': self.SVM(),
-            'XGB': self.XGB(),
-        }
