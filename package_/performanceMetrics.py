@@ -49,44 +49,75 @@ class PerformanceMetrics:
     def accuracyScore(self):
         acc = []
 
-        for f in range(self.fold):
-            acc.append(accuracy_score(self.y_test[f], self.y_pred[f]))
+        if self.fold != 1:
+            for f in range(self.fold):
+                acc.append(accuracy_score(self.y_test[f], self.y_pred[f]))
+        else:
+            acc.append(accuracy_score(self.y_test, self.y_pred))
+
         return "ACC:" + str(np.mean(acc))
 
     def roc_auc(self):
-        fpr, tpr, thresholds = roc_curve(self.y_test, self.y_pred)
+        roc_auc = []
 
-        # plt.figure()
-        # plt.plot(fpr, tpr)
-        # plt.plot([0, 1], [0, 1], 'r--')
-        # plt.xlim([0.0, 1.0])
-        # plt.ylim([0.0, 1.05])
-        # plt.xlabel('False Positive Rate')
-        # plt.ylabel('True Positive Rate')
-        # plt.title('Receiver Operating Characteristic')
-        # plt.show()
+        for f in range(self.fold):
+            fpr, tpr, thresholds = roc_curve(self.y_test[f], self.y_pred[f])
+            print(auc(fpr, tpr))
+            roc_auc.append(auc(fpr, tpr))
 
-        return "AUC:" + str(auc(fpr, tpr))
+        return "AUC:" + str(np.mean(roc_auc))
 
     def f1_score(self):
-        return "F1 score:" + str(f1_score(self.y_test, self.y_pred))
+        f1_scores = []
+
+        if self.fold != 1:
+            for f in range(self.fold):
+                f1_scores.append(f1_score(self.y_test[f], self.y_pred[f]))
+        else:
+            f1_scores.append(f1_score(self.y_test, self.y_pred))
+
+        return "F1 score:" + str(np.mean(f1_scores))
 
     def matthewsCorrcoef(self):
-        return "MCC:" + str(matthews_corrcoef(self.y_test, self.y_pred))
+        mc_scores = []
+
+        if self.fold != 1:
+            for f in range(self.fold):
+                mc_scores.append(matthews_corrcoef(self.y_test[f], self.y_pred[f]))
+        else:
+            mc_scores.append(matthews_corrcoef(self.y_test, self.y_pred))
+
+        return "MCC:" + str(np.mean(mc_scores))
 
     def sd(self):
-        return "SD:" + str(np.std(self.y_pred))
+        sd_scores = []
+
+        if self.fold != 1:
+            for f in range(self.fold):
+                sd_scores.append(np.std(self.y_test[f], self.y_pred[f]))
+        else:
+            sd_scores.append(np.std(self.y_test, self.y_pred))
+
+        return "SD:" + str(np.mean(sd_scores))
 
     def mse(self):
-        return "MSE:" + str(mean_squared_error(self.y_test, self.y_pred))
+        mse_scores = []
+
+        if self.fold != 1:
+            for f in range(self.fold):
+                mse_scores.append(mean_squared_error(self.y_test[f], self.y_pred[f]))
+        else:
+            mse_scores.append(mean_squared_error(self.y_test, self.y_pred))
+
+        return "MSE:" + str(np.mean(mse_scores))
 
     def allMetrics(self):
         return [
-            self.confusionMatrix(),
+            # self.confusionMatrix(),
             self.accuracyScore(),
             self.roc_auc(),
             self.f1_score(),
             self.matthewsCorrcoef(),
-            self.sd(),
+            # self.sd(),
             self.mse()
         ]
