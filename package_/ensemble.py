@@ -1,79 +1,98 @@
 import pandas as pd
-from sklearn.ensemble import VotingClassifier, BaggingClassifier, StackingClassifier
+import package_.modelEvaluation as modelEvaluation
+from sklearn.ensemble import VotingClassifier, BaggingClassifier, StackingClassifier, AdaBoostClassifier, ExtraTreesClassifier, GradientBoostingClassifier, \
+    RandomForestClassifier
+from sklearn.svm import SVC
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.tree import DecisionTreeClassifier
+from xgboost import XGBClassifier
 
 
 class Ensemble:
-    def __init__(self, X_train: pd.DataFrame, X_test: pd.Series, y_train: pd.DataFrame, y_test: pd.Series):
-        self.X_train = X_train
-        self.X_test = X_test
-        self.y_train = y_train
-        self.y_test = y_test
+    def __init__(self, X: pd.DataFrame = None, y: pd.Series = None, features: pd.Series = None, ensemble: str = None, classifiers: list = None,
+                 cross_validation: str = 'hold_out', fold: int = 1, **kwargs):
+        self.X = X[features] if features else X
+        self.y = y
+        self.X_train = None
+        self.X_test = None
+        self.y_train = None
+        self.y_test = None
+        self.ensemble = ensemble
+        self.cross_validation = cross_validation
+        self.classifiers = classifiers
+        self.model_classifiers = []
+        self.predictions = []
+        self.fold = fold
 
-    def Voting(self, classifiers: list, voting: str):
+        me = modelEvaluation.ModelEvaluation(self.X, self.y)
+
+        match self.cross_validation:
+            case 'hold_out':
+                self.X_train, self.X_test, self.y_train, self.y_test = me.holdOut(0.3)
+            case 'k_fold':
+                self.X_train, self.X_test, self.y_train, self.y_test = me.kFold(self.fold)
+            case 'stratified_k_fold':
+                self.X_train, self.X_test, self.y_train, self.y_test = me.StratifiedKFold(self.fold)
+            case 'leave_one_out':
+                self.X_train, self.X_test, self.y_train, self.y_test = me.leaveOneOut()
+            case _:
+                raise ValueError('Invalid cross_validation')
+
+        for classifier in self.classifiers:
+            match classifier:
+                case 'adaboost':
+                    self.model_classifiers.append(('adaboost', AdaBoostClassifier()))
+                case 'gradient_boosting':
+                    self.model_classifiers.append(('gradient_boosting', GradientBoostingClassifier()))
+                case 'random_forest':
+                    self.model_classifiers.append(('random_forest', RandomForestClassifier()))
+                case 'k_neighbors':
+                    self.model_classifiers.append(('k_neighbors', KNeighborsClassifier()))
+                case 'decision_tree':
+                    self.model_classifiers.append(('decision_tree', DecisionTreeClassifier()))
+                case 'extra_trees':
+                    self.model_classifiers.append(('extra_trees', ExtraTreesClassifier()))
+                case 'svm':
+                    self.model_classifiers.append(('svm', SVC()))
+                case 'xgb':
+                    self.model_classifiers.append(('xgb', XGBClassifier()))
+                case 'all':
+                    self.model_classifiers = [('adaboost', AdaBoostClassifier()),
+                                              ('gradient_boosting', GradientBoostingClassifier()),
+                                              ('random_forest', RandomForestClassifier()),
+                                              ('k_neighbors', KNeighborsClassifier()),
+                                              ('decision_tree', DecisionTreeClassifier()),
+                                              ('extra_trees', ExtraTreesClassifier()),
+                                              ('svm', SVC()),
+                                              ('xgb', XGBClassifier())]
+                case _:
+                    raise ValueError('Invalid classifier name')
+
+        match self.ensemble:
+            case 'Voting':
+                self.Voting(**kwargs)
+            case 'Bagging':
+                self.Bagging()
+            case 'Stacking':
+                self.Stacking()
+
+    def Voting(self, **kwargs):
+        voting = kwargs.get('voting', 'soft')
         if voting not in ('soft', 'hard'):
             raise Exception('Voting should be soft or hard')
-        Voting = VotingClassifier(estimators=classifiers, voting=voting)
-        Voting.fit(self.X_train, self.y_train)
-        return Voting.predict(self.X_test)
+        for fold in range(self.fold):
+            Voting = VotingClassifier(estimators=self.model_classifiers, voting=voting)
+            Voting.fit(self.X_train[fold], self.y_train[fold])
+            self.predictions.append(Voting.predict(self.X_test[fold]))
 
-    def Bagging(self, classifiers: list):
-        bagging = BaggingClassifier(estimator=classifiers[0][1])
-        bagging.fit(self.X_train, self.y_train)
-        return bagging.predict(self.X_test)
+    def Bagging(self):
+        for fold in range(self.fold):
+            bagging = BaggingClassifier(estimator=self.model_classifiers[0][1])
+            bagging.fit(self.X_train[fold], self.y_train[fold])
+            self.predictions.append(bagging.predict(self.X_test[fold]))
 
-    def Stacking(self, classifiers: list):
-        stacking = StackingClassifier(estimators=classifiers)
-        stacking.fit(self.X_train, self.y_train)
-        return stacking.predict(self.X_test)
-
-    # def run_ensemble(method, classifiers, X_train, X_test, y_train, y_test):
-    #     ense = ensemble.Ensemble(X_train, X_test, y_train, y_test)
-    #
-    #     if method == 'voting':
-    #         prediction = ense.Voting(classifiers, 'soft')
-    #     elif method == 'bagging':
-    #         prediction = ense.Bagging(classifiers)
-    #     elif method == 'stacking':
-    #         prediction = ense.Stacking(classifiers)
-    #     else:
-    #         raise ValueError(f"Invalid ensemble method: {method}")
-    #
-    #     pm = performanceMetrics.PerformanceMetrics(y_test, prediction)
-    #     accuracy = pm.accuracyScore()[1]
-    #
-    #     return accuracy
-
-    # def evaluate(X: pd.DataFrame, y: pd.Series, features_name: str, features: list):
-    #     print(f'{features_name}:')
-    #     voting_score, bagging_score, stacking_score = None, None, None
-    #     me = modelEvaluation.ModelEvaluation(X[features], y)
-    #     n_splits = 3
-    #     X_train_list, X_test_list, y_train_list, y_test_list = me.StratifiedKFold(n_splits)
-    #
-    #     for method in ['voting', 'bagging', 'stacking']:
-    #         scores = []
-    #
-    #         for i in range(n_splits):
-    #             clf = classifier.Classifier(X_train_list[i], X_test_list[i], y_train_list[i], y_test_list[i])
-    #             classifiers = [
-    #                 ('rf', clf.RandomForest()[0]),
-    #                 ('svm', clf.SVM()[0]),
-    #                 ('knn', clf.KNeighbors()[0]),
-    #             ]
-    #
-    #             accuracy = run_ensemble(method, classifiers, X_train_list[i], X_test_list[i], y_train_list[i],
-    #                                     y_test_list[i])
-    #             scores.append(accuracy)
-    #
-    #         print(f"Acc list ({method}):", scores)
-    #         avg_score = np.mean(scores).round(decimals=2)
-    #         print(f"Average acc ({method}):", avg_score)
-    #
-    #         if method == 'voting':
-    #             voting_score = avg_score
-    #         elif method == 'bagging':
-    #             bagging_score = avg_score
-    #         elif method == 'stacking':
-    #             stacking_score = avg_score
-    #
-    #     return voting_score, bagging_score, stacking_score
+    def Stacking(self):
+        for fold in range(self.fold):
+            stacking = StackingClassifier(estimators=self.model_classifiers)
+            stacking.fit(self.X_train[fold], self.y_train[fold])
+            self.predictions.append(stacking.predict(self.X_test[fold]))
