@@ -21,7 +21,7 @@ class Ensemble:
         self.cross_validation = cross_validation
         self.classifiers = classifiers
         self.model_classifiers = []
-        self.predictions = []
+        self.predictions = {}
         self.fold = fold
 
         me = modelEvaluation.ModelEvaluation(self.X, self.y)
@@ -77,22 +77,31 @@ class Ensemble:
                 self.Stacking()
 
     def Voting(self, **kwargs):
+        predict_proba = []
         voting = kwargs.get('voting', 'soft')
         if voting not in ('soft', 'hard'):
             raise Exception('Voting should be soft or hard')
         for fold in range(self.fold):
             Voting = VotingClassifier(estimators=self.model_classifiers, voting=voting)
             Voting.fit(self.X_train[fold], self.y_train[fold])
-            self.predictions.append(Voting.predict(self.X_test[fold]))
+            predict_proba.append(Voting.predict(self.X_test[fold]))
+
+        self.predictions = {'Voting': predict_proba}
 
     def Bagging(self):
+        predict_proba = []
         for fold in range(self.fold):
             bagging = BaggingClassifier(estimator=self.model_classifiers[0][1])
             bagging.fit(self.X_train[fold], self.y_train[fold])
-            self.predictions.append(bagging.predict(self.X_test[fold]))
+            predict_proba.append(bagging.predict(self.X_test[fold]))
+
+        self.predictions = {'Bagging': predict_proba}
 
     def Stacking(self):
+        predict_proba = []
         for fold in range(self.fold):
             stacking = StackingClassifier(estimators=self.model_classifiers)
             stacking.fit(self.X_train[fold], self.y_train[fold])
-            self.predictions.append(stacking.predict(self.X_test[fold]))
+            predict_proba.append(stacking.predict(self.X_test))
+
+        self.predictions = {'Stacking': predict_proba}
