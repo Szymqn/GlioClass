@@ -10,7 +10,7 @@ class PerformanceMetrics:
         self.classifiers = (self.y_pred.keys())
         self.fold = fold
 
-    def confusionMatrix(self):
+    def confusion_matrix(self):
         cm_dict = {}
         for classifier in self.classifiers:
             cm_list = []
@@ -35,7 +35,7 @@ class PerformanceMetrics:
 
         return "Confusion matrix:" + str(cm_dict)
 
-    def accuracyScore(self):
+    def accuracy_score(self):
         acc_dict = {}
 
         for classifier in self.classifiers:
@@ -80,7 +80,7 @@ class PerformanceMetrics:
         mean_dict = {classifier: sum(values) / len(values) for classifier, values in f1_score_dict.items()}
         return "F1 score: " + str(mean_dict)
 
-    def matthewsCorrcoef(self):
+    def matthews_corrcoef(self):
         matthews_corrcoef_dict = {}
 
         for classifier in self.classifiers:
@@ -122,7 +122,7 @@ class PerformanceMetrics:
         return "MSE: " + str(mean_dict)
 
     def plot_classifier_acc(self):
-        scores_dict = self.accuracyScore()[1]
+        scores_dict = self.accuracy_score()[1]
 
         sorted_results = sorted(zip(scores_dict.keys(), scores_dict.values()), key=lambda x: x[1], reverse=True)
 
@@ -140,13 +140,13 @@ class PerformanceMetrics:
 
         plt.show()
 
-    def allMetrics(self):
+    def all_metrics(self):
         return [
-            self.confusionMatrix(),
-            self.accuracyScore()[0],
+            self.confusion_matrix(),
+            self.accuracy_score()[0],
             self.roc_auc(),
             self.f1_score(),
-            self.matthewsCorrcoef(),
+            self.matthews_corrcoef(),
             # self.sd(),
             self.mse()
         ]

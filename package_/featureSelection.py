@@ -22,7 +22,7 @@ class FeatureSelection:
             case 'mrmr':
                 self.mrmr()
             case 'uTest':
-                self.uTest()
+                self.u_test()
             case _:
                 raise ValueError('Unknown method')
 
@@ -53,7 +53,7 @@ class FeatureSelection:
         self.features = mrmr_features
         return mrmr_features
 
-    def uTest(self):
+    def u_test(self):
         data_class1 = self.y
         data_class2 = self.X
 
@@ -76,13 +76,13 @@ class FeatureSelection:
         self.features = utest_features
         return utest_features
 
-    def showFeatures(self, size: int = 10):
+    def show_features(self, size: int = 10):
         if size > self.size:
             raise ValueError("size is larger than the list of features")
         print(self.features[:size])
 
-    def getFeatures(self):
+    def get_features(self):
         return self.features
 
     def __call__(self):
-        return self.getFeatures()
+        return self.get_features()

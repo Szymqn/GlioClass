@@ -26,12 +26,12 @@ class ModelEvaluation:
 
         return X_train_list, X_test_list, y_train_list, y_test_list
 
-    def holdOut(self, test_size: float):
+    def hold_out(self, test_size: float):
         X_train, X_test, y_train, y_test = train_test_split(self.X, self.y, test_size=test_size, random_state=42)
 
         return X_train, X_test, y_train, y_test
 
-    def kFold(self, n_splits: int):
+    def k_fold(self, n_splits: int):
         kf = KFold(n_splits=n_splits)
         split_indices = list(kf.split(self.X))
 
@@ -39,7 +39,7 @@ class ModelEvaluation:
 
         return X_train_list, X_test_list, y_train_list, y_test_list
 
-    def StratifiedKFold(self, n_splits: int):
+    def stratified_k_fold(self, n_splits: int):
         skf = StratifiedKFold(n_splits=n_splits)
         split_indices = list(skf.split(self.X, self.y))
 
@@ -47,7 +47,7 @@ class ModelEvaluation:
 
         return X_train_list, X_test_list, y_train_list, y_test_list
 
-    def leaveOneOut(self):
+    def leave_one_out(self):
         loo = LeaveOneOut()
         split_indices = list(loo.split(self.X))
 

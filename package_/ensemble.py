@@ -28,13 +28,13 @@ class Ensemble:
 
         match self.cross_validation:
             case 'hold_out':
-                self.X_train, self.X_test, self.y_train, self.y_test = me.holdOut(0.3)
+                self.X_train, self.X_test, self.y_train, self.y_test = me.hold_out(0.3)
             case 'k_fold':
-                self.X_train, self.X_test, self.y_train, self.y_test = me.kFold(self.fold)
+                self.X_train, self.X_test, self.y_train, self.y_test = me.k_fold(self.fold)
             case 'stratified_k_fold':
-                self.X_train, self.X_test, self.y_train, self.y_test = me.StratifiedKFold(self.fold)
+                self.X_train, self.X_test, self.y_train, self.y_test = me.stratified_k_fold(self.fold)
             case 'leave_one_out':
-                self.X_train, self.X_test, self.y_train, self.y_test = me.leaveOneOut()
+                self.X_train, self.X_test, self.y_train, self.y_test = me.leave_one_out()
             case _:
                 raise ValueError('Invalid cross_validation')
 
@@ -70,13 +70,13 @@ class Ensemble:
 
         match self.ensemble:
             case 'Voting':
-                self.Voting(**kwargs)
+                self.voting(**kwargs)
             case 'Bagging':
-                self.Bagging()
+                self.bagging()
             case 'Stacking':
-                self.Stacking()
+                self.stacking()
 
-    def Voting(self, **kwargs):
+    def voting(self, **kwargs):
         predict_proba = []
         voting = kwargs.get('voting', 'soft')
         if voting not in ('soft', 'hard'):
@@ -88,7 +88,7 @@ class Ensemble:
 
         self.predictions = {'Voting': predict_proba}
 
-    def Bagging(self):
+    def bagging(self):
         predict_proba = []
         for fold in range(self.fold):
             bagging = BaggingClassifier(estimator=self.model_classifiers[0][1])
@@ -97,7 +97,7 @@ class Ensemble:
 
         self.predictions = {'Bagging': predict_proba}
 
-    def Stacking(self):
+    def stacking(self):
         predict_proba = []
         for fold in range(self.fold):
             stacking = StackingClassifier(estimators=self.model_classifiers)

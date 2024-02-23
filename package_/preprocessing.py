@@ -9,7 +9,7 @@ class DataPreprocessing:
         self.X = None
         self.y = None
 
-    def loadData(self, path: str, index_col: bool = False, encode: bool = False):
+    def load_data(self, path: str, index_col: bool = False, encode: bool = False):
         file_extension = os.path.splitext(path)[1]
 
         if file_extension == '.csv':
@@ -27,18 +27,18 @@ class DataPreprocessing:
             print("Non numeric columns:", cols)
             if encode:
                 for col in cols:
-                    self.oneHotEncoder(col)
+                    self.one_hot_encoder(col)
         else:
             print("All columns are numeric")
 
-    def oneHotEncoder(self, col_name: str):
+    def one_hot_encoder(self, col_name: str):
         encoder = OneHotEncoder(sparse_output=False, drop="first")
         encoded_data = encoder.fit_transform(self.data[[col_name]])
         encoded_df = pd.DataFrame(encoded_data, columns=[col_name])
         self.data = self.data.drop([col_name], axis=1)
         self.data = pd.concat([self.data, encoded_df], axis=1)
 
-    def setTarget(self, col_name: str):
+    def set_target(self, col_name: str):
         if col_name not in self.data.columns:
             raise ValueError(f"{col_name} not found in DataFrame columns")
 
@@ -54,5 +54,5 @@ class DataPreprocessing:
         scaler = MinMaxScaler()
         self.X = scaler.fit_transform(self.X)
 
-    def showData(self, n_cols: int = 5):
+    def show_data(self, n_cols: int = 5):
         print(self.data.head(n_cols))

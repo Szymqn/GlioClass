@@ -26,47 +26,49 @@ class Classifier:
 
         match self.cross_validation:
             case 'hold_out':
-                self.X_train, self.X_test, self.y_train, self.y_test = me.holdOut(0.3)
+                self.X_train, self.X_test, self.y_train, self.y_test = me.hold_out(0.3)
             case 'k_fold':
-                self.X_train, self.X_test, self.y_train, self.y_test = me.kFold(self.fold)
+                self.X_train, self.X_test, self.y_train, self.y_test = me.k_fold(self.fold)
             case 'stratified_k_fold':
-                self.X_train, self.X_test, self.y_train, self.y_test = me.StratifiedKFold(self.fold)
+                self.X_train, self.X_test, self.y_train, self.y_test = me.stratified_k_fold(self.fold)
             case 'leave_one_out':
-                self.X_train, self.X_test, self.y_train, self.y_test = me.leaveOneOut()
+                self.X_train, self.X_test, self.y_train, self.y_test = me.leave_one_out()
+            case 'resample':
+                self.X_train, self.X_test, self.y_train, self.y_test = me.resample(self.fold)
             case _:
                 raise ValueError('Invalid cross_validation')
 
         for classifier in self.classifiers:
             match classifier:
                 case 'adaboost':
-                    self.predictions['adaboost'] = self.AdaBoost()
+                    self.predictions['adaboost'] = self.ada_boost()
                 case 'gradient_boosting':
-                    self.predictions['gradient_boosting'] = self.GradientBoosting()
+                    self.predictions['gradient_boosting'] = self.gradient_boosting()
                 case 'random_forest':
-                    self.predictions['random_forest'] = self.RandomForest()
+                    self.predictions['random_forest'] = self.random_forest()
                 case 'k_neighbors':
-                    self.predictions['k_neighbors'] = self.KNeighbors()
+                    self.predictions['k_neighbors'] = self.k_neighbors()
                 case 'decision_tree':
-                    self.predictions['decision_tree'] = self.DecisionTree()
+                    self.predictions['decision_tree'] = self.decision_tree()
                 case 'extra_trees':
-                    self.predictions['extra_trees'] = self.ExtraTrees()
+                    self.predictions['extra_trees'] = self.extra_trees()
                 case 'svm':
-                    self.predictions['svm'] = self.SVM()
+                    self.predictions['svm'] = self.svm()
                 case 'xgb':
-                    self.predictions['xgb'] = self.XGB()
+                    self.predictions['xgb'] = self.xgb()
                 case 'all':
-                    self.predictions['adaboost'] = self.AdaBoost()
-                    self.predictions['gradient_boosting'] = self.GradientBoosting()
-                    self.predictions['random_forest'] = self.RandomForest()
-                    self.predictions['k_neighbors'] = self.KNeighbors()
-                    self.predictions['decision_tree'] = self.DecisionTree()
-                    self.predictions['extra_trees'] = self.ExtraTrees()
-                    self.predictions['svm'] = self.SVM()
-                    self.predictions['xgb'] = self.XGB()
+                    self.predictions['adaboost'] = self.ada_boost()
+                    self.predictions['gradient_boosting'] = self.gradient_boosting()
+                    self.predictions['random_forest'] = self.random_forest()
+                    self.predictions['k_neighbors'] = self.k_neighbors()
+                    self.predictions['decision_tree'] = self.decision_tree()
+                    self.predictions['extra_trees'] = self.extra_trees()
+                    self.predictions['svm'] = self.svm()
+                    self.predictions['xgb'] = self.xgb()
                 case _:
                     raise ValueError('Invalid classifier name')
 
-    def AdaBoost(self):
+    def ada_boost(self):
         predict_proba = []
         for fold in range(self.fold):
             adaboostClf = AdaBoostClassifier(random_state=42)
@@ -75,7 +77,7 @@ class Classifier:
 
         return predict_proba
 
-    def GradientBoosting(self):
+    def gradient_boosting(self):
         predict_proba = []
         for fold in range(self.fold):
             gboostClf = GradientBoostingClassifier(random_state=42)
@@ -84,7 +86,7 @@ class Classifier:
 
         return predict_proba
 
-    def RandomForest(self):
+    def random_forest(self):
         predict_proba = []
         for fold in range(self.fold):
             randomForestClf = RandomForestClassifier(random_state=42)
@@ -93,7 +95,7 @@ class Classifier:
 
         return predict_proba
 
-    def KNeighbors(self):
+    def k_neighbors(self):
         predict_proba = []
         for fold in range(self.fold):
             kneighborsClf = KNeighborsClassifier()
@@ -102,7 +104,7 @@ class Classifier:
 
         return predict_proba
 
-    def DecisionTree(self):
+    def decision_tree(self):
         predict_proba = []
         for fold in range(self.fold):
             dtreeClf = DecisionTreeClassifier(random_state=42)
@@ -111,7 +113,7 @@ class Classifier:
 
         return predict_proba
 
-    def ExtraTrees(self):
+    def extra_trees(self):
         predict_proba = []
         for fold in range(self.fold):
             extraTreeClf = ExtraTreesClassifier(random_state=42)
@@ -120,7 +122,7 @@ class Classifier:
 
         return predict_proba
 
-    def SVM(self):
+    def svm(self):
         predict_proba = []
         for fold in range(self.fold):
             svmClf = SVC(probability=True, gamma='auto')
@@ -129,7 +131,7 @@ class Classifier:
 
         return predict_proba
 
-    def XGB(self):
+    def xgb(self):
         predict_proba = []
         for fold in range(self.fold):
             xgbClf = XGBClassifier()
