@@ -4,10 +4,11 @@ from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay, accuracy_s
 
 
 class PerformanceMetrics:
-    def __init__(self, y_test: list, y_pred: dict, fold=1):
+    def __init__(self, y_test: list, y_pred: dict, time: dict, fold=1):
         self.y_test = list(y_test)
         self.y_pred = y_pred
         self.classifiers = (self.y_pred.keys())
+        self.time = time
         self.fold = fold
 
     def confusion_matrix(self):
@@ -96,15 +97,19 @@ class PerformanceMetrics:
         return "MCC: " + str(mean_dict)
 
     def sd(self):
-        sd_scores = []
+        sd_dict = {}
 
-        if self.fold != 1:
-            for f in range(self.fold):
-                sd_scores.append(np.std(self.y_test[f], self.y_pred[f]))
-        else:
-            sd_scores.append(np.std(self.y_test, self.y_pred))
+        for classifier in self.classifiers:
+            acc = []
+            if self.fold != 1:
+                for f in range(self.fold):
+                    acc.append(np.std(self.y_test[f], self.y_pred[classifier][f]))
+                sd_dict[classifier] = acc
+            else:
+                sd_dict[classifier] = np.std(self.y_test, self.y_pred[classifier])
 
-        return "SD:" + str(np.mean(sd_scores))
+        mean_dict = {classifier: sum(values) / len(values) for classifier, values in sd_dict.items()}
+        return "MCC: " + str(mean_dict)
 
     def mse(self):
         mse_dict = {}
@@ -140,9 +145,27 @@ class PerformanceMetrics:
 
         plt.show()
 
+    def plot_classifier_time(self):
+        sorted_results = sorted(zip(self.time.keys(), self.time.values()), key=lambda x: x[1], reverse=False)
+
+        methods, scores = zip(*sorted_results)
+        max_score = max(scores)
+
+        plt.bar(methods, scores)
+        plt.ylim(0.01, max_score)
+        plt.yticks(np.arange(0.01, max_score, max_score / 10))
+
+        plt.xlabel('Classifiers')
+        plt.ylabel('Accuracy Score')
+        plt.title('Classifiers Accuracy Scores')
+
+        plt.xticks(rotation=90)
+
+        plt.show()
+
     def all_metrics(self):
         return [
-            self.confusion_matrix(),
+            # self.confusion_matrix(),
             self.accuracy_score()[0],
             self.roc_auc(),
             self.f1_score(),

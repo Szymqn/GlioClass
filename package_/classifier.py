@@ -1,3 +1,5 @@
+import time
+import psutil
 import pandas as pd
 import package_.modelEvaluation as modelEvaluation
 from sklearn.ensemble import AdaBoostClassifier, ExtraTreesClassifier, GradientBoostingClassifier, \
@@ -9,8 +11,8 @@ from xgboost import XGBClassifier
 
 
 class Classifier:
-    def __init__(self, X: pd.DataFrame = None, y: pd.Series = None, features: pd.Series = None, classifiers: list = None,
-                 cross_validation: str = 'hold_out', fold: int = 1):
+    def __init__(self, X: pd.DataFrame = None, y: pd.Series = None, features: pd.Series = None,
+                 classifiers: list = None, cross_validation: str = 'hold_out', fold: int = 1):
         self.X = X[features] if features else X
         self.y = y
         self.X_train = None
@@ -20,6 +22,8 @@ class Classifier:
         self.cross_validation = cross_validation
         self.classifiers = classifiers
         self.predictions = {}
+        self.time = {}
+        self.memory = {}
         self.fold = fold
 
         me = modelEvaluation.ModelEvaluation(self.X, self.y)
@@ -33,8 +37,6 @@ class Classifier:
                 self.X_train, self.X_test, self.y_train, self.y_test = me.stratified_k_fold(self.fold)
             case 'leave_one_out':
                 self.X_train, self.X_test, self.y_train, self.y_test = me.leave_one_out()
-            case 'resample':
-                self.X_train, self.X_test, self.y_train, self.y_test = me.resample(self.fold)
             case _:
                 raise ValueError('Invalid cross_validation')
 
@@ -69,11 +71,20 @@ class Classifier:
                     raise ValueError('Invalid classifier name')
 
     def ada_boost(self):
+        start_time = time.time()
+        start_memory = psutil.virtual_memory().used
+
         predict_proba = []
         for fold in range(self.fold):
             adaboostClf = AdaBoostClassifier(random_state=42)
             adaboostClf_f = adaboostClf.fit(self.X_train[fold], self.y_train[fold])
             predict_proba.append(adaboostClf_f.predict(self.X_test[fold]))
+
+        end_time = time.time()
+        end_memory = psutil.virtual_memory().used
+
+        self.time['adaboost'] = end_time - start_time
+        self.memory['adaboost'] = abs(end_memory - start_memory)
 
         return predict_proba
 
