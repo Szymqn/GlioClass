@@ -23,7 +23,6 @@ class Classifier:
         self.classifiers = classifiers
         self.predictions = {}
         self.time = {}
-        self.memory = {}
         self.fold = fold
 
         me = modelEvaluation.ModelEvaluation(self.X, self.y)
@@ -72,7 +71,6 @@ class Classifier:
 
     def ada_boost(self):
         start_time = time.time()
-        start_memory = psutil.virtual_memory().used
 
         predict_proba = []
         for fold in range(self.fold):
@@ -81,72 +79,104 @@ class Classifier:
             predict_proba.append(adaboostClf_f.predict(self.X_test[fold]))
 
         end_time = time.time()
-        end_memory = psutil.virtual_memory().used
-
         self.time['adaboost'] = end_time - start_time
-        self.memory['adaboost'] = abs(end_memory - start_memory)
 
         return predict_proba
 
     def gradient_boosting(self):
+        start_time = time.time()
+
         predict_proba = []
         for fold in range(self.fold):
             gboostClf = GradientBoostingClassifier(random_state=42)
             gboostClf_f = gboostClf.fit(self.X_train[fold], self.y_train[fold])
             predict_proba.append(gboostClf_f.predict(self.X_test[fold]))
 
+        end_time = time.time()
+        self.time['gradient_boosting'] = end_time - start_time
+
         return predict_proba
 
     def random_forest(self):
+        start_time = time.time()
+
         predict_proba = []
         for fold in range(self.fold):
             randomForestClf = RandomForestClassifier(random_state=42)
             randomForestClf_f = randomForestClf.fit(self.X_train[fold], self.y_train[fold])
             predict_proba.append(randomForestClf_f.predict(self.X_test[fold]))
 
+        end_time = time.time()
+        self.time['random_forest'] = end_time - start_time
+
         return predict_proba
 
     def k_neighbors(self):
+        start_time = time.time()
+
         predict_proba = []
         for fold in range(self.fold):
             kneighborsClf = KNeighborsClassifier()
             kneighborsClf_f = kneighborsClf.fit(self.X_train[fold], self.y_train[fold])
             predict_proba.append(kneighborsClf_f.predict(self.X_test[fold]))
 
+        end_time = time.time()
+        self.time['k_neighbors'] = end_time - start_time
+
         return predict_proba
 
     def decision_tree(self):
+        start_time = time.time()
+
         predict_proba = []
         for fold in range(self.fold):
             dtreeClf = DecisionTreeClassifier(random_state=42)
             dtreeClf_f = dtreeClf.fit(self.X_train[fold], self.y_train[fold])
             predict_proba.append(dtreeClf_f.predict(self.X_test[fold]))
 
+        end_time = time.time()
+        self.time['decision_tree'] = end_time - start_time
+
         return predict_proba
 
     def extra_trees(self):
+        start_time = time.time()
+
         predict_proba = []
         for fold in range(self.fold):
             extraTreeClf = ExtraTreesClassifier(random_state=42)
             extraTreeClf_f = extraTreeClf.fit(self.X_train[fold], self.y_train[fold])
             predict_proba.append(extraTreeClf_f.predict(self.X_test[fold]))
 
+        end_time = time.time()
+        self.time['extra_trees'] = end_time - start_time
+
         return predict_proba
 
     def svm(self):
+        start_time = time.time()
+
         predict_proba = []
         for fold in range(self.fold):
             svmClf = SVC(probability=True, gamma='auto')
             svmClf_f = svmClf.fit(self.X_train[fold], self.y_train[fold])
             predict_proba.append(svmClf_f.predict(self.X_test[fold]))
 
+        end_time = time.time()
+        self.time['svm'] = end_time - start_time
+
         return predict_proba
 
     def xgb(self):
+        start_time = time.time()
+
         predict_proba = []
         for fold in range(self.fold):
             xgbClf = XGBClassifier()
             xgbClf_f = xgbClf.fit(self.X_train[fold], self.y_train[fold])
             predict_proba.append(xgbClf_f.predict(self.X_test[fold]))
+
+        end_time = time.time()
+        self.time['xgb'] = end_time - start_time
 
         return predict_proba
