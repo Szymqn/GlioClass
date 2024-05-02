@@ -1,3 +1,4 @@
+import time
 import pandas as pd
 import package_.modelEvaluation as modelEvaluation
 from sklearn.ensemble import VotingClassifier, BaggingClassifier, StackingClassifier, AdaBoostClassifier, ExtraTreesClassifier, GradientBoostingClassifier, \
@@ -9,8 +10,8 @@ from xgboost import XGBClassifier
 
 
 class Ensemble:
-    def __init__(self, X: pd.DataFrame = None, y: pd.Series = None, features: pd.Series = None, ensemble: str = None, classifiers: list = None,
-                 cross_validation: str = 'hold_out', fold: int = 1, **kwargs):
+    def __init__(self, X: pd.DataFrame = None, y: pd.Series = None, features: pd.Series = None, ensemble: str = None,
+                 classifiers: list = None, cross_validation: str = 'hold_out', fold: int = 1, **kwargs):
         self.X = X[features] if features else X
         self.y = y
         self.X_train = None
@@ -23,6 +24,7 @@ class Ensemble:
         self.model_classifiers = []
         self.predictions = {}
         self.fold = fold
+        self.time = {}
 
         me = modelEvaluation.ModelEvaluation(self.X, self.y)
 
@@ -77,6 +79,8 @@ class Ensemble:
                 self.stacking()
 
     def voting(self, **kwargs):
+        start_time = time.time()
+
         predict_proba = []
         voting = kwargs.get('voting', 'soft')
         if voting not in ('soft', 'hard'):
@@ -86,22 +90,35 @@ class Ensemble:
             Voting.fit(self.X_train[fold], self.y_train[fold])
             predict_proba.append(Voting.predict(self.X_test[fold]))
 
+        end_time = time.time()
+
+        self.time['Voting'] = end_time - start_time
         self.predictions = {'Voting': predict_proba}
 
     def bagging(self):
+        start_time = time.time()
+
         predict_proba = []
         for fold in range(self.fold):
             bagging = BaggingClassifier(estimator=self.model_classifiers[0][1])
             bagging.fit(self.X_train[fold], self.y_train[fold])
             predict_proba.append(bagging.predict(self.X_test[fold]))
 
+        end_time = time.time()
+
+        self.time['Bagging'] = end_time - start_time
         self.predictions = {'Bagging': predict_proba}
 
     def stacking(self):
+        start_time = time.time()
+
         predict_proba = []
         for fold in range(self.fold):
             stacking = StackingClassifier(estimators=self.model_classifiers)
             stacking.fit(self.X_train[fold], self.y_train[fold])
             predict_proba.append(stacking.predict(self.X_test))
 
+        end_time = time.time()
+
+        self.time['Stacking'] = end_time - start_time
         self.predictions = {'Stacking': predict_proba}
