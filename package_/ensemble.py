@@ -73,15 +73,15 @@ class Ensemble:
         for ens in self.ensemble:
             match ens:
                 case 'voting':
-                    self.voting(**kwargs)
+                    self.predictions['voting'] = self.voting(**kwargs)
                 case 'bagging':
-                    self.bagging()
+                    self.predictions['bagging'] = self.bagging()
                 case 'stacking':
-                    self.stacking()
+                    self.predictions['stacking'] = self.stacking()
                 case 'all':
-                    self.voting(**kwargs)
-                    self.bagging()
-                    # self.stacking()
+                    self.predictions['voting'] = self.voting(**kwargs)
+                    self.predictions['bagging'] = self.bagging()
+                    self.predictions['stacking'] = self.stacking()
 
     def voting(self, **kwargs):
         start_time = time.time()
@@ -98,7 +98,8 @@ class Ensemble:
         end_time = time.time()
 
         self.time['Voting'] = end_time - start_time
-        self.predictions = {'Voting': predict_proba}
+
+        return predict_proba
 
     def bagging(self):
         start_time = time.time()
@@ -112,7 +113,8 @@ class Ensemble:
         end_time = time.time()
 
         self.time['Bagging'] = end_time - start_time
-        self.predictions = {'Bagging': predict_proba}
+
+        return predict_proba
 
     def stacking(self):
         start_time = time.time()
@@ -126,4 +128,5 @@ class Ensemble:
         end_time = time.time()
 
         self.time['Stacking'] = end_time - start_time
-        self.predictions = {'Stacking': predict_proba}
+
+        return predict_proba
