@@ -10,7 +10,7 @@ from xgboost import XGBClassifier
 
 
 class Ensemble:
-    def __init__(self, X: pd.DataFrame = None, y: pd.Series = None, features: pd.Series = None, ensemble: str = None,
+    def __init__(self, X: pd.DataFrame = None, y: pd.Series = None, features: pd.Series = None, ensemble: list = None,
                  classifiers: list = None, cross_validation: str = 'hold_out', fold: int = 1, **kwargs):
         self.X = X[features] if features else X
         self.y = y
@@ -70,13 +70,18 @@ class Ensemble:
                 case _:
                     raise ValueError('Invalid classifier name')
 
-        match self.ensemble:
-            case 'Voting':
-                self.voting(**kwargs)
-            case 'Bagging':
-                self.bagging()
-            case 'Stacking':
-                self.stacking()
+        for ens in self.ensemble:
+            match ens:
+                case 'voting':
+                    self.voting(**kwargs)
+                case 'bagging':
+                    self.bagging()
+                case 'stacking':
+                    self.stacking()
+                case 'all':
+                    self.voting(**kwargs)
+                    self.bagging()
+                    # self.stacking()
 
     def voting(self, **kwargs):
         start_time = time.time()
@@ -116,7 +121,7 @@ class Ensemble:
         for fold in range(self.fold):
             stacking = StackingClassifier(estimators=self.model_classifiers)
             stacking.fit(self.X_train[fold], self.y_train[fold])
-            predict_proba.append(stacking.predict(self.X_test))
+            predict_proba.append(stacking.predict(self.X_test[fold]))
 
         end_time = time.time()
 
