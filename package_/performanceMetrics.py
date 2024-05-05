@@ -2,14 +2,16 @@ import matplotlib.pyplot as plt
 import numpy as np
 from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay, accuracy_score, roc_auc_score, f1_score, matthews_corrcoef, mean_squared_error
 
+from package_.classifier import Classifier
+
 
 class PerformanceMetrics:
-    def __init__(self, y_test: list, y_pred: dict, time: dict, fold=1):
-        self.y_test = list(y_test)
-        self.y_pred = y_pred
+    def __init__(self, classifier: Classifier):
+        self.y_test = list(classifier.y_test)
+        self.y_pred = classifier.predictions
         self.classifiers = (self.y_pred.keys())
-        self.time = time
-        self.fold = fold
+        self.time = classifier.time
+        self.fold = classifier.fold
 
     def confusion_matrix(self):
         cm_dict = {}
@@ -145,6 +147,8 @@ class PerformanceMetrics:
 
         plt.show()
 
+        print(methods, scores)
+
     def plot_classifier_time(self):
         sorted_results = sorted(zip(self.time.keys(), self.time.values()), key=lambda x: x[1], reverse=False)
 
@@ -156,12 +160,14 @@ class PerformanceMetrics:
         plt.yticks(np.arange(0.01, max_score, max_score / 10))
 
         plt.xlabel('Classifiers')
-        plt.ylabel('Accuracy Score')
-        plt.title('Classifiers Accuracy Scores')
+        plt.ylabel('Time in seconds')
+        plt.title('Classifiers Time Measure')
 
         plt.xticks(rotation=90)
 
         plt.show()
+
+        print(self.time)
 
     def all_metrics(self):
         return [
