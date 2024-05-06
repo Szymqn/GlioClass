@@ -1,5 +1,4 @@
 import time
-import psutil
 import pandas as pd
 import package_.modelEvaluation as modelEvaluation
 from sklearn.ensemble import AdaBoostClassifier, ExtraTreesClassifier, GradientBoostingClassifier, \
@@ -13,7 +12,8 @@ from xgboost import XGBClassifier
 class Classifier:
     def __init__(self, X: pd.DataFrame = None, y: pd.Series = None, features: pd.Series = None,
                  classifiers: list = None, cross_validation: str = 'hold_out', fold: int = 1):
-        self.X = X[features] if features else X
+        self.X = X[features] if features is not None else X
+        self.fs = features.name
         self.y = y
         self.X_train = None
         self.X_test = None

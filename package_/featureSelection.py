@@ -31,7 +31,7 @@ class FeatureSelection:
         max_iter = kwargs.get('max_iter', 10000)
         lasso = Lasso(alpha=alpha, max_iter=max_iter)
         lasso.fit(self.X, self.y)
-        self.features = list(np.array(self.X.columns)[:self.size])
+        self.features = pd.Series(data=list(np.array(self.X.columns)[:self.size]), name="Lasso")
         return self.features
 
     def relieff(self, **kwargs):
@@ -45,12 +45,12 @@ class FeatureSelection:
         feature_scores_df = pd.DataFrame({'Feature': self.X.columns, 'Score': feature_scores})
         top_k_features = feature_scores_df.sort_values(by='Score', ascending=False).head(self.size)
         relieff_features = top_k_features['Feature'].tolist()
-        self.features = relieff_features
+        self.features = pd.Series(data=relieff_features, name="ReliefF")
         return relieff_features
 
     def mrmr(self):
         mrmr_features = mrmr_classif(self.X, self.y, K=self.size)
-        self.features = mrmr_features
+        self.features = pd.Series(data=mrmr_features, name="Mrmr")
         return mrmr_features
 
     def u_test(self):
@@ -73,7 +73,7 @@ class FeatureSelection:
 
         utest_features = sorted_p_value_df.loc[sorted_p_value_df['p_value'] < alpha]
         utest_features = utest_features.index.tolist()[:self.size]
-        self.features = utest_features
+        self.features = pd.Series(data=utest_features, name="Mann-Whitney U-test")
         return utest_features
 
     def show_features(self, size: int = 10):
@@ -83,6 +83,3 @@ class FeatureSelection:
 
     def get_features(self):
         return self.features
-
-    def __call__(self):
-        return self.get_features()

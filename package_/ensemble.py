@@ -12,7 +12,8 @@ from xgboost import XGBClassifier
 class Ensemble:
     def __init__(self, X: pd.DataFrame = None, y: pd.Series = None, features: pd.Series = None, ensemble: list = None,
                  classifiers: list = None, cross_validation: str = 'hold_out', fold: int = 1, **kwargs):
-        self.X = X[features] if features else X
+        self.X = X[features] if features is not None else X
+        self.fs = features.name
         self.y = y
         self.X_train = None
         self.X_test = None

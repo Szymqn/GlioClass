@@ -12,6 +12,13 @@ class PerformanceMetrics:
         self.classifiers = (self.y_pred.keys())
         self.time = classifier.time
         self.fold = classifier.fold
+        self.fs = classifier.fs
+
+        self.check_for_none()
+
+    def check_for_none(self):
+        if any(var is None for var in [self.y_test, self.y_pred, self.time, self.fold, self.fs]):
+            raise ValueError("One or more classifier variables are invalid.")
 
     def confusion_matrix(self):
         cm_dict = {}
@@ -141,37 +148,39 @@ class PerformanceMetrics:
 
         plt.xlabel('Classifiers')
         plt.ylabel('Accuracy Score')
-        plt.title('Classifiers Accuracy Scores')
+        plt.title(f'Classifiers Accuracy Scores - {self.fs}')
 
         plt.xticks(rotation=90)
 
         plt.show()
 
-        print(methods, scores)
+        for method, score in zip(methods, scores):
+            print(f"{method}: {score}")
 
     def plot_classifier_time(self):
         sorted_results = sorted(zip(self.time.keys(), self.time.values()), key=lambda x: x[1], reverse=False)
 
-        methods, scores = zip(*sorted_results)
-        max_score = max(scores)
+        methods, times = zip(*sorted_results)
+        max_time = max(times)
+        time_stamp = max_time / 10
 
-        plt.bar(methods, scores)
-        plt.ylim(0.01, max_score)
-        plt.yticks(np.arange(0.01, max_score, max_score / 10))
+        plt.bar(methods, times)
+        plt.ylim(0.01, max_time + time_stamp)
+        plt.yticks(np.arange(0.01, max_time + time_stamp, time_stamp))
 
         plt.xlabel('Classifiers')
         plt.ylabel('Time in seconds')
-        plt.title('Classifiers Time Measure')
+        plt.title(f'Classifiers Time Measure - {self.fs}')
 
         plt.xticks(rotation=90)
 
         plt.show()
 
-        print(self.time)
+        for method, time in zip(methods, times):
+            print(f"{method}: {time} s.")
 
     def all_metrics(self):
         return [
-            # self.confusion_matrix(),
             self.accuracy_score()[0],
             self.roc_auc(),
             self.f1_score(),
