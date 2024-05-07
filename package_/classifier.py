@@ -44,26 +44,26 @@ class Classifier:
                 case 'adaboost':
                     self.predictions['adaboost'] = self.ada_boost()
                 case 'gradient_boosting':
-                    self.predictions['gradient_boosting'] = self.gradient_boosting()
+                    self.predictions['gradient boosting'] = self.gradient_boosting()
                 case 'random_forest':
-                    self.predictions['random_forest'] = self.random_forest()
+                    self.predictions['random forest'] = self.random_forest()
                 case 'k_neighbors':
-                    self.predictions['k_neighbors'] = self.k_neighbors()
+                    self.predictions['k neighbors'] = self.k_neighbors()
                 case 'decision_tree':
-                    self.predictions['decision_tree'] = self.decision_tree()
+                    self.predictions['decision tree'] = self.decision_tree()
                 case 'extra_trees':
-                    self.predictions['extra_trees'] = self.extra_trees()
+                    self.predictions['extra trees'] = self.extra_trees()
                 case 'svm':
                     self.predictions['svm'] = self.svm()
                 case 'xgb':
                     self.predictions['xgb'] = self.xgb()
                 case 'all':
                     self.predictions['adaboost'] = self.ada_boost()
-                    self.predictions['gradient_boosting'] = self.gradient_boosting()
-                    self.predictions['random_forest'] = self.random_forest()
-                    self.predictions['k_neighbors'] = self.k_neighbors()
-                    self.predictions['decision_tree'] = self.decision_tree()
-                    self.predictions['extra_trees'] = self.extra_trees()
+                    self.predictions['gradient boosting'] = self.gradient_boosting()
+                    self.predictions['random forest'] = self.random_forest()
+                    self.predictions['k neighbors'] = self.k_neighbors()
+                    self.predictions['decision tree'] = self.decision_tree()
+                    self.predictions['extra trees'] = self.extra_trees()
                     self.predictions['svm'] = self.svm()
                     self.predictions['xgb'] = self.xgb()
                 case _:
@@ -93,7 +93,7 @@ class Classifier:
             predict_proba.append(gboostClf_f.predict(self.X_test[fold]))
 
         end_time = time.time()
-        self.time['gradient_boosting'] = end_time - start_time
+        self.time['gradient boosting'] = end_time - start_time
 
         return predict_proba
 
@@ -107,7 +107,7 @@ class Classifier:
             predict_proba.append(randomForestClf_f.predict(self.X_test[fold]))
 
         end_time = time.time()
-        self.time['random_forest'] = end_time - start_time
+        self.time['random forest'] = end_time - start_time
 
         return predict_proba
 
@@ -121,7 +121,7 @@ class Classifier:
             predict_proba.append(kneighborsClf_f.predict(self.X_test[fold]))
 
         end_time = time.time()
-        self.time['k_neighbors'] = end_time - start_time
+        self.time['k neighbors'] = end_time - start_time
 
         return predict_proba
 
@@ -135,7 +135,7 @@ class Classifier:
             predict_proba.append(dtreeClf_f.predict(self.X_test[fold]))
 
         end_time = time.time()
-        self.time['decision_tree'] = end_time - start_time
+        self.time['decision tree'] = end_time - start_time
 
         return predict_proba
 
@@ -149,7 +149,7 @@ class Classifier:
             predict_proba.append(extraTreeClf_f.predict(self.X_test[fold]))
 
         end_time = time.time()
-        self.time['extra_trees'] = end_time - start_time
+        self.time['extra trees'] = end_time - start_time
 
         return predict_proba
 

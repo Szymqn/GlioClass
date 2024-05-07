@@ -98,7 +98,7 @@ class Ensemble:
 
         end_time = time.time()
 
-        self.time['Voting'] = end_time - start_time
+        self.time['voting'] = end_time - start_time
 
         return predict_proba
 
@@ -113,7 +113,7 @@ class Ensemble:
 
         end_time = time.time()
 
-        self.time['Bagging'] = end_time - start_time
+        self.time['bagging'] = end_time - start_time
 
         return predict_proba
 
@@ -128,6 +128,6 @@ class Ensemble:
 
         end_time = time.time()
 
-        self.time['Stacking'] = end_time - start_time
+        self.time['stacking'] = end_time - start_time
 
         return predict_proba
