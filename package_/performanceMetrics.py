@@ -1,4 +1,5 @@
 import matplotlib.pyplot as plt
+import seaborn as sns
 import numpy as np
 from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay, accuracy_score, roc_auc_score, f1_score, matthews_corrcoef, mean_squared_error
 
@@ -124,10 +125,10 @@ class PerformanceMetrics:
         scores_dict = self.accuracy_score()[1]
 
         plt.figure(figsize=(10, 6))
-        plt.boxplot(list(scores_dict.values()), labels=list(scores_dict.keys()))
+        sns.boxplot(data=list(scores_dict.values()), palette='hls')
+        plt.xticks(ticks=range(len(scores_dict)), labels=list(scores_dict.keys()), rotation=90)
         plt.ylabel('Accuracy score')
         plt.title(f'Box plot of classifiers accuracy, FS: {self.fs}')
-        plt.xticks(rotation=90)
         plt.grid(True)
 
         plt.show()
