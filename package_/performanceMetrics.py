@@ -57,8 +57,8 @@ class PerformanceMetrics:
             else:
                 acc_dict[classifier] = accuracy_score(self.y_test, self.y_pred)
 
-        mean_dict = {classifier: sum(values) / len(values) for classifier, values in acc_dict.items()}
-        return "ACC: " + str(mean_dict), mean_dict
+        mean_dict = {classifier: round(np.mean(values), 3) for classifier, values in acc_dict.items()}
+        return "ACC: " + str(mean_dict), acc_dict
 
     def roc_auc(self):
         roc_auc_dict = {}
@@ -72,7 +72,7 @@ class PerformanceMetrics:
             else:
                 roc_auc_dict[classifier] = roc_auc_score(self.y_test, self.y_pred)
 
-        mean_dict = {classifier: sum(values) / len(values) for classifier, values in roc_auc_dict.items()}
+        mean_dict = {classifier: round(np.mean(values), 3) for classifier, values in roc_auc_dict.items()}
         return "Roc Auc: " + str(mean_dict)
 
     def f1_score(self):
@@ -87,7 +87,7 @@ class PerformanceMetrics:
             else:
                 f1_score_dict[classifier] = f1_score(self.y_test, self.y_pred)
 
-        mean_dict = {classifier: sum(values) / len(values) for classifier, values in f1_score_dict.items()}
+        mean_dict = {classifier: round(np.mean(values), 3) for classifier, values in f1_score_dict.items()}
         return "F1 score: " + str(mean_dict)
 
     def matthews_corrcoef(self):
@@ -102,22 +102,7 @@ class PerformanceMetrics:
             else:
                 matthews_corrcoef_dict[classifier] = matthews_corrcoef(self.y_test, self.y_pred)
 
-        mean_dict = {classifier: sum(values) / len(values) for classifier, values in matthews_corrcoef_dict.items()}
-        return "MCC: " + str(mean_dict)
-
-    def sd(self):
-        sd_dict = {}
-
-        for classifier in self.classifiers:
-            acc = []
-            if self.fold != 1:
-                for f in range(self.fold):
-                    acc.append(np.std(self.y_test[f], self.y_pred[classifier][f]))
-                sd_dict[classifier] = acc
-            else:
-                sd_dict[classifier] = np.std(self.y_test, self.y_pred[classifier])
-
-        mean_dict = {classifier: sum(values) / len(values) for classifier, values in sd_dict.items()}
+        mean_dict = {classifier: round(np.mean(values), 3) for classifier, values in matthews_corrcoef_dict.items()}
         return "MCC: " + str(mean_dict)
 
     def mse(self):
@@ -132,30 +117,20 @@ class PerformanceMetrics:
             else:
                 mse_dict[classifier] = mean_squared_error(self.y_test, self.y_pred)
 
-        mean_dict = {classifier: sum(values) / len(values) for classifier, values in mse_dict.items()}
+        mean_dict = {classifier: round(np.mean(values), 3) for classifier, values in mse_dict.items()}
         return "MSE: " + str(mean_dict)
 
     def plot_classifier_acc(self):
         scores_dict = self.accuracy_score()[1]
 
-        sorted_results = sorted(zip(scores_dict.keys(), scores_dict.values()), key=lambda x: x[1], reverse=True)
-
-        methods, scores = zip(*sorted_results)
-
-        plt.bar(methods, scores)
-        plt.ylim(0.5, 1)
-        plt.yticks(np.arange(0.5, 1.01, 0.05))
-
-        plt.xlabel('Classifiers')
-        plt.ylabel('Accuracy Score')
-        plt.title(f'Classifiers Accuracy Scores - {self.fs}')
-
+        plt.figure(figsize=(10, 6))
+        plt.boxplot(list(scores_dict.values()), labels=list(scores_dict.keys()))
+        plt.ylabel('Accuracy score')
+        plt.title(f'Box plot of classifiers accuracy, FS: {self.fs}')
         plt.xticks(rotation=90)
+        plt.grid(True)
 
         plt.show()
-
-        for method, score in zip(methods, scores):
-            print(f"{method}: {score}")
 
     def plot_classifier_time(self):
         sorted_results = sorted(zip(self.time.keys(), self.time.values()), key=lambda x: x[1], reverse=False)
@@ -185,6 +160,5 @@ class PerformanceMetrics:
             self.roc_auc(),
             self.f1_score(),
             self.matthews_corrcoef(),
-            # self.sd(),
             self.mse()
         ]
