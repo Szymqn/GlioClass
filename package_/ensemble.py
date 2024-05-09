@@ -50,7 +50,7 @@ class Ensemble:
                 case 'random_forest':
                     self.model_classifiers.append(('random_forest', RandomForestClassifier()))
                 case 'k_neighbors':
-                    self.model_classifiers.append(('k_neighbors', KNeighborsClassifier()))
+                    self.model_classifiers.append(('k_nearest_neighbors', KNeighborsClassifier()))
                 case 'decision_tree':
                     self.model_classifiers.append(('decision_tree', DecisionTreeClassifier()))
                 case 'extra_trees':

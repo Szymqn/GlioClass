@@ -48,7 +48,7 @@ class Classifier:
                 case 'random_forest':
                     self.predictions['random forest'] = self.random_forest()
                 case 'k_neighbors':
-                    self.predictions['k neighbors'] = self.k_neighbors()
+                    self.predictions['k nearest neighbors'] = self.k_nearest_neighbors()
                 case 'decision_tree':
                     self.predictions['decision tree'] = self.decision_tree()
                 case 'extra_trees':
@@ -61,7 +61,7 @@ class Classifier:
                     self.predictions['adaboost'] = self.ada_boost()
                     self.predictions['gradient boosting'] = self.gradient_boosting()
                     self.predictions['random forest'] = self.random_forest()
-                    self.predictions['k neighbors'] = self.k_neighbors()
+                    self.predictions['k nearest neighbors'] = self.k_nearest_neighbors()
                     self.predictions['decision tree'] = self.decision_tree()
                     self.predictions['extra trees'] = self.extra_trees()
                     self.predictions['svm'] = self.svm()
@@ -111,7 +111,7 @@ class Classifier:
 
         return predict_proba
 
-    def k_neighbors(self):
+    def k_nearest_neighbors(self):
         start_time = time.time()
 
         predict_proba = []
@@ -121,7 +121,7 @@ class Classifier:
             predict_proba.append(kneighborsClf_f.predict(self.X_test[fold]))
 
         end_time = time.time()
-        self.time['k neighbors'] = end_time - start_time
+        self.time['k nearest neighbors'] = end_time - start_time
 
         return predict_proba
 
