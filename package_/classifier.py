@@ -158,7 +158,7 @@ class Classifier:
 
         predict_proba = []
         for fold in range(self.fold):
-            svmClf = SVC(probability=True, gamma='auto')
+            svmClf = SVC(kernel='linear')
             svmClf_f = svmClf.fit(self.X_train[fold], self.y_train[fold])
             predict_proba.append(svmClf_f.predict(self.X_test[fold]))
 
