@@ -67,7 +67,7 @@ class PerformanceMetrics:
         mse_dict = {classifier: round(np.mean(values), 3) for classifier, values in mse_dict.items()}
         combined_dict = {classifier: [mean_dict[classifier], mse_dict.get(classifier)] for classifier in mean_dict}
 
-        # print("Accuracy:\n", combined_dict)
+        print("Accuracy:\n", combined_dict)
 
         return "ACC: " + str(mean_dict), acc_dict
 
