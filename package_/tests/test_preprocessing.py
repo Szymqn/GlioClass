@@ -2,7 +2,7 @@ import numpy as np
 import package_.preprocessing as preprocessing
 
 pr = preprocessing.DataPreprocessing()
-pr.load_data('test_data/exampleData_TCGA_LUAD_2000.csv')
+pr.load_data('../../test_data/exampleData_TCGA_LUAD_2000.csv')
 
 
 def test_load_data() -> None:

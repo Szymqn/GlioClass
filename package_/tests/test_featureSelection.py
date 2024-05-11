@@ -5,7 +5,7 @@ import package_.preprocessing as preprocessing
 NUM_FEATURES = 10
 
 pr = preprocessing.DataPreprocessing()
-pr.load_data('test_data/exampleData_TCGA_LUAD_2000.csv')
+pr.load_data('../../test_data/exampleData_TCGA_LUAD_2000.csv')
 X, y = pr.set_target('class')
 
 
