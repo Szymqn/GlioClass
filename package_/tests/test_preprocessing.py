@@ -11,8 +11,8 @@ def test_load_data() -> None:
 
 def test_set_target() -> None:
     X, y = pr.set_target('class')
-    assert X is not None and len(X.shape) == 2
-    assert y is not None and len(y.shape) == 1
+    assert X is not None and len(X.shape) == 2 & \
+           y is not None and len(y.shape) == 1
 
 
 def test_one_hot_encoder() -> None:
