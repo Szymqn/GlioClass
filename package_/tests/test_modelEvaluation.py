@@ -14,10 +14,11 @@ def test_hold_out() -> None:
     X_train, X_test, y_train, y_test = me.hold_out(test_size)
 
     assert any(var is None for var in [X_train, X_test, y_train, y_test]) is False
-    assert X_train.shape[0] == floor(X.shape[0] * (1 - test_size)) & \
-           X_test.shape[0] == ceil(X.shape[0] * test_size) & \
-           y_train.shape[0] == floor(y.shape[0] * (1 - test_size)) & \
-           y_test.shape[0] == ceil(y.shape[0] * test_size)
+
+    assert X_train.shape[0] == floor(X.shape[0] * (1 - test_size))
+    assert X_test.shape[0] == ceil(X.shape[0] * test_size)
+    assert y_train.shape[0] == floor(y.shape[0] * (1 - test_size))
+    assert y_test.shape[0] == ceil(y.shape[0] * test_size)
 
 
 def test_k_fold() -> None:
@@ -25,10 +26,7 @@ def test_k_fold() -> None:
 
     X_train, X_test, y_train, y_test = me.k_fold(n_splits)
     assert any(var is None for var in [X_train, X_test, y_train, y_test]) is False
-    assert len(X_train) == n_splits & \
-           len(X_test) == n_splits & \
-           len(y_train) == n_splits & \
-           len(y_test) == n_splits
+    assert all(len(var) == n_splits for var in [X_train, X_test, y_train, y_test])
 
 
 def test_stratified_k_fold() -> None:
@@ -36,17 +34,12 @@ def test_stratified_k_fold() -> None:
 
     X_train, X_test, y_train, y_test = me.stratified_k_fold(n_splits)
     assert any(var is None for var in [X_train, X_test, y_train, y_test]) is False
-    assert len(X_train) == n_splits & \
-           len(X_test) == n_splits & \
-           len(y_train) == n_splits & \
-           len(y_test) == n_splits
+    assert all(len(var) == n_splits for var in [X_train, X_test, y_train, y_test])
 
 
 def test_leave_one_out() -> None:
     X_train, X_test, y_train, y_test = me.leave_one_out()
 
     assert any(var is None for var in [X_train, X_test, y_train, y_test]) is False
-    assert len(X_train) == X.shape[0] & \
-           len(X_test) == X.shape[0] & \
-           len(y_train) == y.shape[0] & \
-           len(y_test) == y.shape[0]
+    assert all(len(var) == X.shape[0] for var in [X_train, X_test]) and \
+           all(len(var) == y.shape[0] for var in [y_train, y_test])
