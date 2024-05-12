@@ -44,7 +44,7 @@ class Ensemble:
         for classifier in self.classifiers:
             match classifier:
                 case 'adaboost':
-                    self.model_classifiers.append(('adaboost', AdaBoostClassifier()))
+                    self.model_classifiers.append(('adaboost', AdaBoostClassifier(algorithm='SAMME')))
                 case 'gradient_boosting':
                     self.model_classifiers.append(('gradient_boosting', GradientBoostingClassifier()))
                 case 'random_forest':
@@ -60,13 +60,13 @@ class Ensemble:
                 case 'xgb':
                     self.model_classifiers.append(('xgb', XGBClassifier()))
                 case 'all':
-                    self.model_classifiers = [('adaboost', AdaBoostClassifier()),
+                    self.model_classifiers = [('adaboost', AdaBoostClassifier(algorithm='SAMME')),
                                               ('gradient_boosting', GradientBoostingClassifier()),
                                               ('random_forest', RandomForestClassifier()),
                                               ('k_neighbors', KNeighborsClassifier()),
                                               ('decision_tree', DecisionTreeClassifier()),
                                               ('extra_trees', ExtraTreesClassifier()),
-                                              ('svm', SVC()),
+                                              ('svm', SVC(kernel='linear')),
                                               ('xgb', XGBClassifier())]
                 case _:
                     raise ValueError('Invalid classifier name')

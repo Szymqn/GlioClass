@@ -42,7 +42,7 @@ class Classifier:
         for classifier in self.classifiers:
             match classifier:
                 case 'adaboost':
-                    self.predictions['adaboost'] = self.ada_boost()
+                    self.predictions['adaboost'] = self.adaboost()
                 case 'gradient_boosting':
                     self.predictions['gradient boosting'] = self.gradient_boosting()
                 case 'random_forest':
@@ -58,7 +58,7 @@ class Classifier:
                 case 'xgb':
                     self.predictions['xgb'] = self.xgb()
                 case 'all':
-                    self.predictions['adaboost'] = self.ada_boost()
+                    self.predictions['adaboost'] = self.adaboost()
                     self.predictions['gradient boosting'] = self.gradient_boosting()
                     self.predictions['random forest'] = self.random_forest()
                     self.predictions['k nearest neighbors'] = self.k_nearest_neighbors()
@@ -69,12 +69,12 @@ class Classifier:
                 case _:
                     raise ValueError('Invalid classifier name')
 
-    def ada_boost(self):
+    def adaboost(self):
         start_time = time.time()
 
         predict_proba = []
         for fold in range(self.fold):
-            adaboostClf = AdaBoostClassifier(random_state=42)
+            adaboostClf = AdaBoostClassifier(random_state=42, algorithm='SAMME')
             adaboostClf_f = adaboostClf.fit(self.X_train[fold], self.y_train[fold])
             predict_proba.append(adaboostClf_f.predict(self.X_test[fold]))
 
