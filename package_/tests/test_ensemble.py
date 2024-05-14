@@ -1,6 +1,10 @@
+import numpy as np
+
 import package_.preprocessing as preprocessing
 import package_.ensemble as ensemble
 import package_.featureSelection as featureSelection
+
+np.seterr(divide='ignore')
 
 pr = preprocessing.DataPreprocessing()
 pr.load_data('../../test_data/exampleData_TCGA_LUAD_2000.csv')
