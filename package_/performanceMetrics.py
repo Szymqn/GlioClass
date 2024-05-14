@@ -170,12 +170,15 @@ class PerformanceMetrics:
         plt.ylabel('Time in seconds')
         plt.title(f'Classifiers Time Measure - {self.fs}')
 
+        for i, (method, time) in enumerate(zip(methods, times)):
+            plt.text(i, time + (time_stamp * 0.1), f'{round(time, 3)} s', ha='center', va='bottom')
+
         plt.xticks(rotation=90)
 
         plt.show()
 
         for method, time in zip(methods, times):
-            print(f"{method}: {time} s.")
+            print(f"{method}: {round(time, 3)} s.")
 
     def all_metrics(self):
         return [
