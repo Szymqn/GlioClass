@@ -151,7 +151,7 @@ class PerformanceMetrics:
         plt.xticks(ticks=range(len(scores_dict)), labels=list(scores_dict.keys()), rotation=90)
         plt.ylabel('Accuracy score')
         plt.title(f'Box plot of classifiers accuracy, FS: {self.fs}')
-        plt.grid(True)
+        sns.set_theme()
 
         plt.show()
 
@@ -169,7 +169,7 @@ class PerformanceMetrics:
         plt.xlabel('Classifiers')
         plt.ylabel('Time in seconds')
         plt.title(f'Classifiers Time Measure - {self.fs}')
-        plt.grid(True)
+        sns.set_theme()
 
         for i, (method, time) in enumerate(zip(methods, times)):
             plt.text(i, time + (time_stamp * 0.1), f'{round(time, 3)} s', ha='center', va='bottom')
