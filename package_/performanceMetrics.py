@@ -169,6 +169,7 @@ class PerformanceMetrics:
         plt.xlabel('Classifiers')
         plt.ylabel('Time in seconds')
         plt.title(f'Classifiers Time Measure - {self.fs}')
+        plt.grid(True)
 
         for i, (method, time) in enumerate(zip(methods, times)):
             plt.text(i, time + (time_stamp * 0.1), f'{round(time, 3)} s', ha='center', va='bottom')
