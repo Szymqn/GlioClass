@@ -22,5 +22,6 @@ class CombinedMetrics:
             plt.ylabel('Accuracy score')
             plt.title(f'Box plot of FS accuracy, classifier: {clf}')
             plt.grid(True)
+            sns.set_theme()
 
             plt.show()
