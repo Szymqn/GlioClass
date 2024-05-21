@@ -73,7 +73,7 @@ class FeatureSelection:
 
         utest_features = sorted_p_value_df.loc[sorted_p_value_df['p_value'] < alpha]
         utest_features = utest_features.index.tolist()[:self.size]
-        self.features = pd.Series(data=utest_features, name="Mann-Whitney U-test")
+        self.features = pd.Series(data=utest_features, name="U-test")
         return utest_features
 
     def show_features(self, size: int = 10):

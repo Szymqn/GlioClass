@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 import seaborn as sns
 import numpy as np
-from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay, accuracy_score, roc_auc_score, f1_score, matthews_corrcoef, mean_squared_error
+from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay, accuracy_score, roc_auc_score, f1_score, matthews_corrcoef
 
 from package_.classifier import Classifier
 
@@ -48,24 +48,19 @@ class PerformanceMetrics:
 
     def accuracy_score(self):
         acc_dict = {}
-        mse_dict = {}
 
         for classifier in self.classifiers:
             acc = []
-            mse = []
             if self.fold != 1:
                 for f in range(self.fold):
                     acc.append(accuracy_score(self.y_test[f], self.y_pred[classifier][f]))
-                    mse.append(mean_squared_error(self.y_test[f], self.y_pred[classifier][f]))
                 acc_dict[classifier] = acc
-                mse_dict[classifier] = mse
             else:
                 acc_dict[classifier] = accuracy_score(self.y_test, self.y_pred)
-                mse_dict[classifier] = mean_squared_error(self.y_test, self.y_pred)
 
         mean_dict = {classifier: round(np.mean(values), 3) for classifier, values in acc_dict.items()}
-        mse_dict = {classifier: round(np.mean(values), 3) for classifier, values in mse_dict.items()}
-        combined_dict = {classifier: [mean_dict[classifier], mse_dict.get(classifier)] for classifier in mean_dict}
+        sd_dict = {classifier: round(np.std(values), 3) for classifier, values in acc_dict.items()}
+        combined_dict = {classifier: [mean_dict[classifier], sd_dict.get(classifier)] for classifier in mean_dict}
 
         print("Accuracy:\n", combined_dict)
 
@@ -73,72 +68,59 @@ class PerformanceMetrics:
 
     def roc_auc(self):
         roc_auc_dict = {}
-        mse_dict = {}
 
         for classifier in self.classifiers:
-            acc = []
-            mse = []
+            roc_auc = []
             if self.fold != 1:
                 for f in range(self.fold):
-                    acc.append(roc_auc_score(self.y_test[f], self.y_pred[classifier][f]))
-                    mse.append(mean_squared_error(self.y_test[f], self.y_pred[classifier][f]))
-                roc_auc_dict[classifier] = acc
-                mse_dict[classifier] = mse
+                    roc_auc.append(roc_auc_score(self.y_test[f], self.y_pred[classifier][f]))
+                roc_auc_dict[classifier] = roc_auc
             else:
                 roc_auc_dict[classifier] = roc_auc_score(self.y_test, self.y_pred)
-                mse_dict[classifier] = mean_squared_error(self.y_test, self.y_pred)
 
         mean_dict = {classifier: round(np.mean(values), 3) for classifier, values in roc_auc_dict.items()}
-        mse_dict = {classifier: round(np.mean(values), 3) for classifier, values in mse_dict.items()}
-        combined_dict = {classifier: [mean_dict[classifier], mse_dict.get(classifier)] for classifier in mean_dict}
+        sd_dict = {classifier: round(np.std(values), 3) for classifier, values in roc_auc_dict.items()}
+        combined_dict = {classifier: [mean_dict[classifier], sd_dict.get(classifier)] for classifier in mean_dict}
+
         print("Roc Auc:\n", combined_dict)
 
         return "Roc Auc: " + str(mean_dict)
 
     def f1_score(self):
         f1_score_dict = {}
-        mse_dict = {}
 
         for classifier in self.classifiers:
-            acc = []
-            mse = []
+            f_score = []
             if self.fold != 1:
                 for f in range(self.fold):
-                    acc.append(f1_score(self.y_test[f], self.y_pred[classifier][f]))
-                    mse.append(mean_squared_error(self.y_test[f], self.y_pred[classifier][f]))
-                f1_score_dict[classifier] = acc
-                mse_dict[classifier] = mse
+                    f_score.append(f1_score(self.y_test[f], self.y_pred[classifier][f]))
+                f1_score_dict[classifier] = f_score
             else:
                 f1_score_dict[classifier] = f1_score(self.y_test, self.y_pred)
-                mse_dict[classifier] = mean_squared_error(self.y_test, self.y_pred)
 
         mean_dict = {classifier: round(np.mean(values), 3) for classifier, values in f1_score_dict.items()}
-        mse_dict = {classifier: round(np.mean(values), 3) for classifier, values in mse_dict.items()}
-        combined_dict = {classifier: [mean_dict[classifier], mse_dict.get(classifier)] for classifier in mean_dict}
+        sd_dict = {classifier: round(np.std(values), 3) for classifier, values in f1_score_dict.items()}
+        combined_dict = {classifier: [mean_dict[classifier], sd_dict.get(classifier)] for classifier in mean_dict}
+
         print("F1 score:\n", combined_dict)
 
         return "F1 score: " + str(mean_dict)
 
     def matthews_corrcoef(self):
         matthews_corrcoef_dict = {}
-        mse_dict = {}
 
         for classifier in self.classifiers:
-            acc = []
-            mse = []
+            mc = []
             if self.fold != 1:
                 for f in range(self.fold):
-                    acc.append(matthews_corrcoef(self.y_test[f], self.y_pred[classifier][f]))
-                    mse.append(mean_squared_error(self.y_test[f], self.y_pred[classifier][f]))
-                matthews_corrcoef_dict[classifier] = acc
-                mse_dict[classifier] = mse
+                    mc.append(matthews_corrcoef(self.y_test[f], self.y_pred[classifier][f]))
+                matthews_corrcoef_dict[classifier] = mc
             else:
                 matthews_corrcoef_dict[classifier] = matthews_corrcoef(self.y_test, self.y_pred)
-                mse_dict[classifier] = mean_squared_error(self.y_test, self.y_pred)
 
         mean_dict = {classifier: round(np.mean(values), 3) for classifier, values in matthews_corrcoef_dict.items()}
-        mse_dict = {classifier: round(np.mean(values), 3) for classifier, values in mse_dict.items()}
-        combined_dict = {classifier: [mean_dict[classifier], mse_dict.get(classifier)] for classifier in mean_dict}
+        sd_dict = {classifier: round(np.std(values), 3) for classifier, values in matthews_corrcoef_dict.items()}
+        combined_dict = {classifier: [mean_dict[classifier], sd_dict.get(classifier)] for classifier in mean_dict}
         print("MCC:\n", combined_dict)
 
         return "MCC: " + str(mean_dict)
