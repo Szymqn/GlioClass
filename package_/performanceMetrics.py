@@ -62,9 +62,9 @@ class PerformanceMetrics:
         sd_dict = {classifier: round(np.std(values), 3) for classifier, values in acc_dict.items()}
         combined_dict = {classifier: [mean_dict[classifier], sd_dict.get(classifier)] for classifier in mean_dict}
 
-        print("Accuracy:\n", combined_dict)
+        # print("Accuracy:\n", combined_dict)
 
-        return "ACC: " + str(mean_dict), acc_dict
+        return "ACC: " + str(combined_dict), acc_dict
 
     def roc_auc(self):
         roc_auc_dict = {}
@@ -82,9 +82,7 @@ class PerformanceMetrics:
         sd_dict = {classifier: round(np.std(values), 3) for classifier, values in roc_auc_dict.items()}
         combined_dict = {classifier: [mean_dict[classifier], sd_dict.get(classifier)] for classifier in mean_dict}
 
-        print("Roc Auc:\n", combined_dict)
-
-        return "Roc Auc: " + str(mean_dict)
+        return "Roc Auc: " + str(combined_dict)
 
     def f1_score(self):
         f1_score_dict = {}
@@ -102,9 +100,7 @@ class PerformanceMetrics:
         sd_dict = {classifier: round(np.std(values), 3) for classifier, values in f1_score_dict.items()}
         combined_dict = {classifier: [mean_dict[classifier], sd_dict.get(classifier)] for classifier in mean_dict}
 
-        print("F1 score:\n", combined_dict)
-
-        return "F1 score: " + str(mean_dict)
+        return "F1 score: " + str(combined_dict)
 
     def matthews_corrcoef(self):
         matthews_corrcoef_dict = {}
@@ -121,9 +117,8 @@ class PerformanceMetrics:
         mean_dict = {classifier: round(np.mean(values), 3) for classifier, values in matthews_corrcoef_dict.items()}
         sd_dict = {classifier: round(np.std(values), 3) for classifier, values in matthews_corrcoef_dict.items()}
         combined_dict = {classifier: [mean_dict[classifier], sd_dict.get(classifier)] for classifier in mean_dict}
-        print("MCC:\n", combined_dict)
 
-        return "MCC: " + str(mean_dict)
+        return "MCC: " + str(combined_dict)
 
     def plot_classifier_acc(self):
         scores_dict = self.accuracy_score()[1]
