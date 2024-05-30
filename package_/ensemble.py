@@ -45,16 +45,16 @@ class Ensemble:
             match classifier:
                 case 'adaboost':
                     self.model_classifiers.append(('adaboost', AdaBoostClassifier(algorithm='SAMME')))
-                case 'gradient_boosting':
-                    self.model_classifiers.append(('gradient_boosting', GradientBoostingClassifier()))
+                case 'gradient boosting':
+                    self.model_classifiers.append(('gradient boosting', GradientBoostingClassifier()))
                 case 'random_forest':
-                    self.model_classifiers.append(('random_forest', RandomForestClassifier()))
+                    self.model_classifiers.append(('random forest', RandomForestClassifier()))
                 case 'k_neighbors':
-                    self.model_classifiers.append(('k_nearest_neighbors', KNeighborsClassifier()))
+                    self.model_classifiers.append(('k_nearest neighbors', KNeighborsClassifier()))
                 case 'decision_tree':
-                    self.model_classifiers.append(('decision_tree', DecisionTreeClassifier()))
+                    self.model_classifiers.append(('decision tree', DecisionTreeClassifier()))
                 case 'extra_trees':
-                    self.model_classifiers.append(('extra_trees', ExtraTreesClassifier()))
+                    self.model_classifiers.append(('extra trees', ExtraTreesClassifier()))
                 case 'svm':
                     self.model_classifiers.append(('svm', SVC()))
                 case 'xgb':
