@@ -53,10 +53,8 @@ class DataPreprocessing:
     def standardization(self):
         scaler = MinMaxScaler()
         scaler.fit(self.X)
-        # self.X = scaler.fit_transform(self.X)
         self.X = pd.DataFrame(scaler.transform(self.X), index=self.X.index, columns=self.X.columns)
         return self.X
-        # normData = pd.DataFrame(scaler.transform(df), index=df.index, columns=df.columns)
 
     def show_data(self, n_cols: int = 5):
         print(self.data.head(n_cols))
