@@ -35,10 +35,9 @@ class FeatureSelection:
         return self.features
 
     def relieff(self, **kwargs):
-        n_neighbors = kwargs.get('n_neighbors', 5)
         n_features_to_keep = kwargs.get('n_features_to_keep', 100)
         X_array = self.X.values
-        fs = ReliefF(n_neighbors=n_neighbors, n_features_to_keep=n_features_to_keep)
+        fs = ReliefF(n_features_to_keep=n_features_to_keep)
         fs.fit_transform(X_array, self.y)
 
         feature_scores = fs.feature_scores
