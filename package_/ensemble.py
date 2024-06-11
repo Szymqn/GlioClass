@@ -88,7 +88,7 @@ class Ensemble:
         start_time = time.time()
 
         predict_proba = []
-        voting = kwargs.get('voting', 'soft')
+        voting = kwargs.get('voting', 'hard')
         if voting not in ('soft', 'hard'):
             raise Exception('Voting should be soft or hard')
         for fold in range(self.fold):

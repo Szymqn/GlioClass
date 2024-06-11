@@ -58,8 +58,10 @@ class PerformanceMetrics:
             else:
                 acc_dict[classifier] = accuracy_score(self.y_test, self.y_pred)
 
-        mean_dict = {classifier: round(np.mean(values), 3) for classifier, values in acc_dict.items()}
-        sd_dict = {classifier: round(np.std(values), 3) for classifier, values in acc_dict.items()}
+        # mean_dict = {classifier: round(np.mean(values), 3) for classifier, values in acc_dict.items()}
+        # sd_dict = {classifier: round(np.std(values), 3) for classifier, values in acc_dict.items()}
+        mean_dict = {classifier: np.mean(values) for classifier, values in acc_dict.items()}
+        sd_dict = {classifier: np.std(values) for classifier, values in acc_dict.items()}
         combined_dict = {classifier: [mean_dict[classifier], sd_dict.get(classifier)] for classifier in mean_dict}
 
         # print("Accuracy:\n", combined_dict)
