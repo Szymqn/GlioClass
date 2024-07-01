@@ -35,10 +35,12 @@ class FeatureSelection:
         return self.features
 
     def relieff(self, **kwargs):
-        n_features_to_keep = kwargs.get('n_features_to_keep', 100)
+        n_features_to_keep = kwargs.get('n_features_to_keep', self.size)
         X_array = self.X.values
-        fs = ReliefF(n_features_to_keep=n_features_to_keep)
-        fs.fit_transform(X_array, self.y)
+        y_array = self.y.values
+
+        fs = ReliefF(n_neighbors=100, n_features_to_keep=n_features_to_keep)
+        fs.fit(X_array, y_array)
 
         feature_scores = fs.feature_scores
         feature_scores_df = pd.DataFrame({'Feature': self.X.columns, 'Score': feature_scores})
