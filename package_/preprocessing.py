@@ -14,7 +14,7 @@ class DataPreprocessing:
 
         if file_extension == '.csv':
             if index_col:
-                self.data = pd.read_csv(path, index_col=0)
+                self.data = pd.read_csv(path, index_col=0, sep=';')
             else:
                 self.data = pd.read_csv(path)
         elif file_extension == '.txt':
@@ -25,6 +25,13 @@ class DataPreprocessing:
         if not self.data.select_dtypes(exclude=['number']).columns.empty:
             cols = self.data.select_dtypes(exclude=['number']).columns
             print("Non numeric columns:", cols)
+            for col in cols:
+                try:
+                    self.data[col] = self.data[col].str.replace(',', '.')
+                    self.data[col] = self.data[col].astype(float)
+                except ValueError:
+                    print("Non numeric columns could not be converted to numeric")
+
             if encode:
                 for col in cols:
                     self.one_hot_encoder(col)
