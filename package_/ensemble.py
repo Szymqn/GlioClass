@@ -45,7 +45,7 @@ class Ensemble:
             match classifier:
                 case 'adaboost':
                     self.model_classifiers.append(('adaboost', AdaBoostClassifier(algorithm='SAMME')))
-                case 'gradient boosting':
+                case 'gradient_boosting':
                     self.model_classifiers.append(('gradient boosting', GradientBoostingClassifier()))
                 case 'random_forest':
                     self.model_classifiers.append(('random forest', RandomForestClassifier()))
