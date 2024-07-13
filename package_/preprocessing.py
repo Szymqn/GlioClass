@@ -9,16 +9,16 @@ class DataPreprocessing:
         self.X = None
         self.y = None
 
-    def load_data(self, path: str, index_col: bool = False, encode: bool = False):
+    def load_data(self, path: str, index_col: bool = False, encode: bool = False, sep: str = ','):
         file_extension = os.path.splitext(path)[1]
 
         if file_extension == '.csv':
             if index_col:
-                self.data = pd.read_csv(path, index_col=0, sep=';')
+                self.data = pd.read_csv(path, index_col=0, sep=sep)
             else:
-                self.data = pd.read_csv(path)
+                self.data = pd.read_csv(path, sep=sep)
         elif file_extension == '.txt':
-            self.data = pd.read_csv(path, sep='	')
+            self.data = pd.read_csv(path, sep=sep)
         else:
             raise ValueError('Unsupported file extension, must be .csv or .txt file')
 
